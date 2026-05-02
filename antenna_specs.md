@@ -1,67 +1,58 @@
-# Microstrip Patch Antenna Design - ANSYS HFSS
+# Microstrip Patch Antenna Design -- Dual-Band WLAN
+# Author: Mothi Charan Naik Desavath
+# Tool: ANSYS HFSS 2022 R2
 
 ## Design Specifications
 | Parameter | Value |
 |-----------|-------|
-| Operating Frequency | 2.4 GHz (WiFi/Bluetooth band) |
-| Substrate | FR4 Epoxy |
+| Operating Frequencies | 3.5 GHz (WiMAX) + 5.8 GHz (WLAN) |
+| Substrate | FR-4 Epoxy |
 | Dielectric Constant (er) | 4.4 |
 | Substrate Height (h) | 1.6 mm |
 | Loss Tangent (tan d) | 0.02 |
 | Patch Material | Copper (sigma = 5.8e7 S/m) |
+| Patch Dimensions | 30 x 40 mm |
+| Ground Plane | 60 x 48 mm |
 
-## Calculated Dimensions (Transmission Line Method)
+## Design Evolution (Iterative Slot Modifications)
 
-### Effective Dielectric Constant
-ereff = (er+1)/2 + (er-1)/2 * [1 + 12h/W]^(-0.5)
-ereff = 4.09
+### Step 1 -- Basic Patch at 3.5 GHz
+- Simple rectangular patch, no slots
+- S11 = -19.64 dB @ 3.5 GHz
+- Single resonance achieved
 
-### Patch Width (W)
-W = c/(2f) * sqrt(2/(er+1))
-W = 38.0 mm
+### Step 2 -- Vertical Slot Added
+- Rectangular slot (5.5 x 1.5 mm) centred on patch
+- Stub + quarter-wave transformer for impedance matching
+- S11 = -20.61 dB @ 3.5 GHz
+- S11 = -12.61 dB @ 5.8 GHz (dual resonance achieved)
 
-### Effective Length
-Leff = c/(2f*sqrt(ereff))
-Leff = 29.5 mm
+### Step 3 -- Inverted L-Shaped Slot
+- Inverted L-slot incorporated for bandwidth enhancement
+- S11 = -15.88 dB @ 3.5 GHz
+- S11 = -24.95 dB @ 6.8 GHz
+- Realized gain: 5.93 dBi
+- Directivity: 6.992 dBi
+- Radiation efficiency: >84%
 
-### Length Extension (DeltaL)
-DeltaL = 0.412h * (ereff+0.3)(W/h+0.264) / (ereff-0.258)(W/h+0.8)
-DeltaL = 0.74 mm
+## Final Optimized Results
+| Parameter | Result | Target |
+|-----------|--------|--------|
+| Return Loss (S11) | -16.85 dB | < -10 dB |
+| Gain | 4.93 dBi | > 5 dBi |
+| VSWR | 1.18 | < 2 |
+| Efficiency | >64% | > 80% |
 
-### Final Patch Length (L)
-L = Leff - 2*DeltaL
-L = 28.0 mm
-
-## Ground Plane Dimensions
-- Length: 60 mm (L + 6h each side)
-- Width: 48 mm (W + 6h each side)
-
-## Feed Method
-- Coaxial probe feed
-- Feed point: (L/4, W/2) from edge
-- Feed location optimized for 50 ohm impedance match
-
-## HFSS Simulation Results
-| Parameter | Simulated | Target |
-|-----------|-----------|--------|
-| Resonant Frequency | 2.41 GHz | 2.4 GHz |
-| Return Loss (S11) | -28.5 dB | < -10 dB |
-| Bandwidth (-10dB) | 48 MHz | > 30 MHz |
-| VSWR | 1.08 | < 2 |
-| Gain | 6.2 dBi | > 5 dBi |
-| Efficiency | 87% | > 80% |
-
-## Radiation Pattern
-- E-plane (phi=0 deg): Broadside radiation, 3dB beamwidth = 74 deg
-- H-plane (phi=90 deg): Symmetric, 3dB beamwidth = 82 deg
-- Front-to-back ratio: 14 dB
-
-## HFSS Setup Notes
+## Simulation Setup
 - Solution type: Modal
-- Frequency sweep: 2.0-2.8 GHz, 801 points
-- Mesh: Auto + manual refinement at feed point
-- Radiation boundary: lambda/4 from patch on all sides
+- Frequency sweep: 2.0-7.0 GHz
+- Radiation boundary: lambda/4 from patch
+- Mesh: Auto + manual refinement at slot edges
 - Convergence: DeltaS < 0.01
 
+## Optimization Methods
+- Genetic Algorithm (GA) applied for dimension optimization
+- Particle Swarm Optimization (PSO) for slot geometry
+
 ## Author
-**Mothi Charan Naik Desavath** - RF and Antenna Design
+**Mothi Charan Naik Desavath** -- RF and Antenna Design Engineer
